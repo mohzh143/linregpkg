@@ -2,15 +2,18 @@
 % Please edit documentation in R/methods.R
 \name{pred}
 \alias{pred}
-\title{Predicted/fitted values for linreg}
+\title{Predicted/fitted values generic}
 \usage{
 pred(object, ...)
 }
 \arguments{
-\item{object}{a linreg object}
+\item{object}{a model object}
 
 \item{...}{unused; for S3 compatibility}
 }
+\value{
+Method dispatches to class-specific implementations.
+}
 \description{
-Predicted/fitted values for linreg
+Predicted/fitted values generic
 }

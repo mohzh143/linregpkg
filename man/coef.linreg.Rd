@@ -11,6 +11,9 @@
 
 \item{...}{unused; for S3 compatibility}
 }
+\value{
+A named numeric vector of coefficients.
+}
 \description{
 Coefficients for linreg
 }

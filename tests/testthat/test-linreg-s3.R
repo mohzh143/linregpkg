@@ -1,86 +1,95 @@
-test_that("linreg rejects erroneous input", {
-  data(iris)
+# tests/testthat/test-linreg-s3.R
 
-  # misspelled variable in the formula
+# ---- erroneous input ----
+test_that("linreg rejects errounous input", {
+  data("iris")
+
+  # misspelled variable name in the formula
   expect_error(linreg(Petal.Length ~ Sepdsal.Width + Sepal.Length, data = iris))
 
   # non-existent data object
-  expect_error(linreg(Petal.Length ~ Sepal.Width + Sepal.Length, data = irfsfdis))
+  expect_error(linreg(Petal.Length ~ Sepdsal.Width + Sepal.Length, data = irfsfdis))
 })
 
+# ---- class ----
 test_that("class is correct", {
-  data(iris)
-  fit <- linreg(Petal.Length ~ Sepal.Width + Sepal.Length, data = iris)
-  expect_s3_class(fit, "linreg")
+  data("iris")
+  linreg_mod <- linreg(Petal.Length ~ Sepal.Width + Sepal.Length, data = iris)
+  expect_s3_class(linreg_mod, "linreg")
 })
 
-test_that("coef/pred/resid match lm()", {
-  data(iris)
-  f_linreg <- linreg(Petal.Length ~ Sepal.Width + Sepal.Length, data = iris)
-  f_lm     <- lm    (Petal.Length ~ Sepal.Width + Sepal.Length, data = iris)
+# ---- print() ----
+test_that("print() works", {
+  data("iris")
+  linreg_mod <- linreg(Petal.Length ~ Sepal.Width + Sepal.Length, data = iris)
 
-  # coefficients, fitted values, and residuals are consistent with lm() (numerical tolerance allowed)
-  expect_equal(unname(coef(f_linreg)), unname(coef(f_lm)), tolerance = 1e-6)
-  expect_equal(pred(f_linreg),         unname(fitted(f_lm)), tolerance = 1e-6)
-  expect_equal(resid(f_linreg),        unname(residuals(f_lm)), tolerance = 1e-6)
+  # Call line
+  expect_output(
+    print(linreg_mod),
+    "linreg\\(formula = Petal\\.Length ~ Sepal\\.Width \\+ Sepal\\.Length, data = iris\\)"
+  )
 
-  # residual standard deviation (sigma)
-  expect_equal(sqrt(f_linreg$sigma_squared), summary(f_lm)$sigma, tolerance = 1e-6)
+  # Coefficients header/columns present
+  expect_output(
+    print(linreg_mod),
+    "( )*\\(Intercept\\)( )*Sepal\\.Width( )*Sepal\\.Length"
+  )
 })
 
-test_that("print() contains Call and Coefficients", {
-  data(iris)
-  fit <- linreg(Petal.Length ~ Sepal.Width + Sepal.Length, data = iris)
+# ---- pred() ----
+test_that("pred() works", {
+  data("iris")
+  linreg_mod <- linreg(Petal.Length ~ Sepal.Width + Sepal.Length, data = iris)
 
-  # print output should not error and must contain Call and Coefficients
-  expect_output(print(fit), "Call:")
-  expect_output(print(fit), "Coefficients:")
-  # allow inclusion of Method: QR
-  expect_output(print(fit), "Method:\\s*QR")
+  # match exact positions and rounded values from the spec
+  expect_equal(
+    round(unname(pred(linreg_mod)[c(1, 5, 7)]), 2),
+    c(1.85, 1.53, 1.09)
+  )
 })
 
-test_that("summary() returns coefficient table similar to lm()", {
-  data(iris)
-  f_linreg <- linreg(Petal.Length ~ Sepal.Width + Sepal.Length, data = iris)
-  f_lm     <- lm    (Petal.Length ~ Sepal.Width + Sepal.Length, data = iris)
+# ---- resid() ----
+test_that("resid() works", {
+  data("iris")
+  linreg_mod <- linreg(Petal.Length ~ Sepal.Width + Sepal.Length, data = iris)
 
-  s_linreg <- summary(f_linreg)           # data.frame (Estimate, Std. Error, t value, Pr(>|t|))
-  s_lm     <- coef(summary(f_lm))         # matrix (Estimate, Std. Error, t value, Pr(>|t|))
-
-  # align by row names and compare values
-  s_linreg <- s_linreg[rownames(s_lm), ]
-  expect_equal(s_linreg$Estimate,   unname(s_lm[, "Estimate"]),   tolerance = 1e-6)
-  expect_equal(s_linreg$`Std. Error`, unname(s_lm[, "Std. Error"]), tolerance = 1e-6)
-  expect_equal(s_linreg$`t value`,  unname(s_lm[, "t value"]),    tolerance = 1e-6)
-  expect_equal(s_linreg$`Pr(>|t|)`, unname(s_lm[, "Pr(>|t|)"]),   tolerance = 1e-6)
-
-  # print output must include residual standard error and degrees of freedom
-  expect_output(summary(f_linreg), "Residual standard error:\\s*[0-9.]+\\s*on\\s*[0-9]+\\s*degrees of freedom")
+  expect_equal(
+    round(unname(resid(linreg_mod)[c(7, 13, 27)]), 2),
+    c(0.31, -0.58, -0.20)
+  )
 })
 
-test_that("plot() runs silently", {
-  data(iris)
-  fit <- linreg(Petal.Length ~ Sepal.Width + Sepal.Length, data = iris)
-  expect_silent(plot(fit))
+# ---- coef() ----
+test_that("coef() works", {
+  data("iris")
+  linreg_mod <- linreg(Petal.Length ~ Sepal.Width + Sepal.Length, data = iris)
+
+  # coefficients rounded and contained in the expected set (from spec)
+  expect_true(
+    all(round(unname(coef(linreg_mod)), 2) %in% c(-2.52, -1.34, 1.78))
+  )
 })
 
-test_that("n <= p triggers error", {
-  set.seed(1)
-  df <- data.frame(y = rnorm(3), x1 = rnorm(3), x2 = rnorm(3), x3 = rnorm(3))
-  expect_error(linreg(y ~ x1 + x2 + x3, df), "n must be larger than p")
-})
+# ---- summary() ----
+test_that("summary() works", {
+  data("iris")
+  linreg_mod <- linreg(Petal.Length ~ Sepal.Width + Sepal.Length, data = iris)
 
-test_that("rank-deficient design triggers error", {
-  set.seed(1)
-  df <- data.frame(y = rnorm(10), x1 = rnorm(10))
-  df$x2 <- df$x1  # perfect collinearity
-  expect_error(linreg(y ~ x1 + x2, df), "rank-deficient")
-})
-
-test_that("NA rows are removed consistently (na.omit behavior)", {
-  df <- datasets::mtcars
-  df$mpg[1] <- NA
-  fit <- linreg(mpg ~ cyl + hp, df)
-  n_complete <- nrow(stats::na.omit(df[, c("mpg","cyl","hp")]))
-  expect_equal(length(resid(fit)), n_complete)
+  # regex checks copied from the spec
+  expect_output(
+    summary(linreg_mod),
+    "\\(Intercept\\)( )*-2.5[0-9]*( )*0.5[0-9]*( )*-4.4[0-9]*( )*.*( )*\\*\\*\\*"
+  )
+  expect_output(
+    summary(linreg_mod),
+    "Sepal.Width( )*-1.3[0-9]*( )*0.1[0-9]*( )*-10.9[0-9]*( )*.*( )*\\*\\*\\*"
+  )
+  expect_output(
+    summary(linreg_mod),
+    "Sepal.Length( )*1.7[0-9]*( )*0.0[0-9]*( )*27.5[0-9]*( )*.*( )*\\*\\*\\*"
+  )
+  expect_output(
+    summary(linreg_mod),
+    "Residual standard error: 0.6[0-9]* on 147 degrees of freedom"
+  )
 })

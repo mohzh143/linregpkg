@@ -11,6 +11,9 @@
 
 \item{...}{unused; for S3 compatibility}
 }
+\value{
+Invisibly returns \code{x}.
+}
 \description{
 Print method for linreg
 }

@@ -2,15 +2,18 @@
 % Please edit documentation in R/methods.R
 \name{pred.linreg}
 \alias{pred.linreg}
-\title{Predicted/fitted values for linreg (method)}
+\title{Predicted/fitted values for linreg objects}
 \usage{
 \method{pred}{linreg}(object, ...)
 }
 \arguments{
-\item{object}{a linreg object}
+\item{object}{a model object}
 
 \item{...}{unused; for S3 compatibility}
 }
+\value{
+A numeric vector of fitted values (unnamed).
+}
 \description{
-Predicted/fitted values for linreg (method)
+Predicted/fitted values for linreg objects
 }

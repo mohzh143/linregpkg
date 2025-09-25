@@ -1,12 +1,16 @@
-#' Predicted/fitted values for linreg
-#' @param object a linreg object
+#' Predicted/fitted values generic
+#'
+#' @param object a model object
 #' @param ... unused; for S3 compatibility
+#' @return Method dispatches to class-specific implementations.
 #' @export
 pred <- function(object, ...) UseMethod("pred")
 
 #' Print method for linreg
+#'
 #' @param x a linreg object
 #' @param ... unused; for S3 compatibility
+#' @return Invisibly returns `x`.
 #' @export
 print.linreg <- function(x, ...) {
   cat("Call:\n")
@@ -18,32 +22,37 @@ print.linreg <- function(x, ...) {
   invisible(x)
 }
 
-#' Residuals for linreg (method for residuals())
-#' @param object a linreg object
-#' @param ... unused; for S3 compatibility
-#' @export
-residuals.linreg <- function(object, ...) unname(object$residuals)
 
-#' Residuals for linreg (alias of residuals())
+#' Residuals for linreg
+#'
 #' @param object a linreg object
 #' @param ... unused; for S3 compatibility
+#' @return A numeric vector of residuals (unnamed).
 #' @export
 resid.linreg <- function(object, ...) unname(object$residuals)
 
-#' Predicted/fitted values for linreg (method)
+
+#' Predicted/fitted values for linreg objects
+#'
 #' @inheritParams pred
+#' @param ... unused; for S3 compatibility
+#' @return A numeric vector of fitted values (unnamed).
 #' @export
 pred.linreg <- function(object, ...) unname(object$y_hat)
 
 #' Coefficients for linreg
+#'
 #' @param object a linreg object
 #' @param ... unused; for S3 compatibility
+#' @return A named numeric vector of coefficients.
 #' @export
 coef.linreg <- function(object, ...) {
   stats::setNames(object$beta_hat, names(object$beta_hat))
 }
 
+
 #' Summary for linreg
+#'
 #' @param object a linreg object
 #' @param ... unused; for S3 compatibility
 #' @return A data.frame with columns: Estimate, Std. Error, t value, Pr(>|t|)
@@ -60,13 +69,25 @@ summary.linreg <- function(object, ...) {
       "on", object$df,"degrees of freedom\n")
   if (!is.null(object$method))
     cat("Method:", toupper(object$method), "\n")
-  return(out)
+
+  star <- symnum(
+    out$`Pr(>|t|)`,
+    corr = FALSE, na = FALSE,
+    cutpoints = c(0, .001, .01, .05, .1, 1),
+    symbols = c("***", "**", "*", ".", " ")
+  )
+  out_print <- cbind(out, ` ` = as.character(star))
+  print(out_print)
+
+  invisible(out)
 }
 
 
 #' Diagnostic plots for linreg (ggplot2)
+#'
 #' @param x a linreg object
 #' @param ... unused; for S3 compatibility
+#' @return Invisibly returns `x`. Produces two diagnostic ggplot panels.
 #' @importFrom rlang .data
 #' @export
 plot.linreg <- function(x, ...) {

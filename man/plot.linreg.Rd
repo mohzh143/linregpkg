@@ -11,6 +11,9 @@
 
 \item{...}{unused; for S3 compatibility}
 }
+\value{
+Invisibly returns \code{x}. Produces two diagnostic ggplot panels.
+}
 \description{
 Diagnostic plots for linreg (ggplot2)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/methods.R
 \name{resid.linreg}
 \alias{resid.linreg}
-\title{Residuals for linreg (alias of residuals())}
+\title{Residuals for linreg}
 \usage{
 \method{resid}{linreg}(object, ...)
 }
@@ -11,6 +11,9 @@
 
 \item{...}{unused; for S3 compatibility}
 }
+\value{
+A numeric vector of residuals (unnamed).
+}
 \description{
-Residuals for linreg (alias of residuals())
+Residuals for linreg
 }
