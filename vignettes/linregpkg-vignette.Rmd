@@ -1,0 +1,76 @@
+---
+title: "linregpkg User Guide"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{linregpkg User Guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Introduction
+
+`linregpkg` provides an implementation of linear regression using **QR decomposition** in the **S3 object system**.  
+The package includes the following methods:
+
+- `print()`
+- `coef()`
+- `pred()`
+- `resid()`
+- `summary()`
+- `plot()` (two diagnostic plots using **ggplot2**)
+
+---
+
+# Quick Start
+
+Load the package:
+
+```r
+library(linregpkg)
+library(ggplot2)
+```
+
+Fit a model on the R's built-in `iris` dataset:
+
+```r
+fit <- linreg(Petal.Length ~ Sepal.Width + Sepal.Length, data = iris)
+```
+
+---
+
+# Methods
+
+## print()
+
+```r
+print(fit)
+```
+
+## coef()
+
+```r
+coef(fit)
+```
+
+## pred()
+
+```r
+head(pred(fit))
+```
+
+## resid()
+
+```r
+head(resid(fit))
+```
+
+## summary()
+
+```r
+summary(fit)
+```
+
+## plot()
+
+```r
+plot(fit)

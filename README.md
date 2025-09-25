@@ -1,0 +1,30 @@
+linregpkg
+================
+
+# linregpkg
+
+An S3 implementation of linear regression via QR decomposition.
+
+## Installation
+
+``` r
+# install.packages("devtools")
+devtools::install_github("mohzh143/linregpkg")
+```
+
+## Example
+
+``` r
+library(linregpkg)
+
+# Fit model on iris dataset
+fit <- linreg(Petal.Length ~ Sepal.Width + Sepal.Length, data = iris)
+
+# Methods
+print(fit)
+coef(fit)
+head(pred(fit))
+head(resid(fit))
+summary(fit)
+plot(fit)
+```

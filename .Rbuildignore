@@ -1,2 +1,5 @@
 ^linregpkg\.Rproj$
 ^\.Rproj\.user$
+^\.github$
+^doc$
+^Meta$
