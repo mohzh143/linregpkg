@@ -2,8 +2,8 @@
 # linregpkg
 
 `linregpkg` is an R package created for **Lab 4 at Linköping**
-University. An S3 implementation of linear regression via QR
-decomposition.
+University.  
+An S3 implementation of linear regression via QR decomposition.
 
 <!-- badges: start -->
 
