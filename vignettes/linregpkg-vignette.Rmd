@@ -74,3 +74,4 @@ summary(fit)
 
 ```r
 plot(fit)
+```
