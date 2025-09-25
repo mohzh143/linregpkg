@@ -3,7 +3,17 @@ linregpkg
 
 # linregpkg
 
-An S3 implementation of linear regression via QR decomposition.
+linregpkg is an R package created for Lab 3 at Linköping University. An
+S3 implementation of linear regression via QR decomposition.
+
+<!-- Badges here -->
+
+<figure>
+<img
+src="https://github.com/mohzh143/linregpkg/actions/workflows/R-CMD-check.yaml/badge.svg"
+alt="R-CMD-check" />
+<figcaption aria-hidden="true">R-CMD-check</figcaption>
+</figure>
 
 ## Installation
 
